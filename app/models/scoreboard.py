@@ -10,6 +10,7 @@ class Scoreboard(Document):
     score_local: Optional[int] = None
     score_visitor: Optional[int] = None
     time_restant: Optional[int] = None
+    arbitre_id: Optional[ObjectId] = None
     match_id: Optional[ObjectId] = None
 
     class Settings:
