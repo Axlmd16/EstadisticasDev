@@ -15,28 +15,24 @@ class MatchService:
     def _convert_string_ids_to_objectid(self, data: dict) -> dict:
         """Convierte string IDs a ObjectId para almacenar en MongoDB"""
         converted_data = data.copy()
-        
         if converted_data.get('season_id'):
             converted_data['season_id'] = ObjectId(converted_data['season_id'])
-        
-        if converted_data.get('team_ids'):
-            converted_data['team_ids'] = [
-                ObjectId(id_str) for id_str in converted_data['team_ids']
-            ]
-        
+        if converted_data.get('local_team_id'):
+            converted_data['local_team_id'] = ObjectId(converted_data['local_team_id'])
+        if converted_data.get('visitor_team_id'):
+            converted_data['visitor_team_id'] = ObjectId(converted_data['visitor_team_id'])
         return converted_data
 
     async def create_match(self, match: MatchCreate) -> MatchResponse:
         try:
             match_data = match.model_dump(exclude_unset=True)
             match_data = self._convert_string_ids_to_objectid(match_data)
-            
             doc = await self.repo.create(match_data)
-            
             return MatchResponse(
                 id=str(doc.id),
                 season_id=str(doc.season_id) if doc.season_id else None,
-                team_ids=[str(tid) for tid in doc.team_ids],
+                local_team_id=str(doc.local_team_id),
+                visitor_team_id=str(doc.visitor_team_id),
                 date=doc.date
             )
         except Exception as e:
@@ -53,7 +49,8 @@ class MatchService:
                 MatchResponse(
                     id=str(match.id),
                     season_id=str(match.season_id) if match.season_id else None,
-                    team_ids=[str(tid) for tid in match.team_ids],
+                    local_team_id=str(match.local_team_id),
+                    visitor_team_id=str(match.visitor_team_id),
                     date=match.date
                 ) for match in matches
             ]
@@ -68,14 +65,14 @@ class MatchService:
         match = await self.repo.get_by_id(match_id)
         if not match:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, 
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="Match not found"
             )
-        
         return MatchResponse(
             id=str(match.id),
             season_id=str(match.season_id) if match.season_id else None,
-            team_ids=[str(tid) for tid in match.team_ids],
+            local_team_id=str(match.local_team_id),
+            visitor_team_id=str(match.visitor_team_id),
             date=match.date
         )
 
@@ -83,19 +80,17 @@ class MatchService:
         db_match = await self.repo.get_by_id(match_id)
         if not db_match:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, 
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="Match not found"
             )
-        
         update_data = match.model_dump(exclude_unset=True)
         update_data = self._convert_string_ids_to_objectid(update_data)
-        
         updated = await self.repo.update(match_id, update_data)
-        
         return MatchResponse(
             id=str(updated.id),
             season_id=str(updated.season_id) if updated.season_id else None,
-            team_ids=[str(tid) for tid in updated.team_ids],
+            local_team_id=str(updated.local_team_id),
+            visitor_team_id=str(updated.visitor_team_id),
             date=updated.date
         )
 

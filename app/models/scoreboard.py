@@ -11,6 +11,7 @@ class Scoreboard(Document):
     score_visitor: Optional[int] = None
     time_restant: Optional[int] = None
     match_id: Optional[ObjectId] = None
+    is_final: bool = False  
 
     async def save(self, *args, **kwargs):
         self.last_update = datetime.utcnow().isoformat()
