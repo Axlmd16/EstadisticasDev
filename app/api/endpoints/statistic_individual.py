@@ -1,41 +1,32 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, status
 from typing import List
-from app.models.statistic_individual import StatisticIndividual
-from app.schemas.statistic_schemas import StatisticIndividualCreate, StatisticIndividualUpdate, StatisticIndividualResponse
 from beanie import PydanticObjectId
+from app.schemas.statistic_individual_schema import (
+    StatisticIndividualCreate,
+    StatisticIndividualUpdate,
+    StatisticIndividualResponse,
+)
+from app.services.statistic_individual_service import statistic_individual_service
 
-router = APIRouter(prefix="/api/v1/statistics/individual", tags=["StatisticsIndividual"])
+router = APIRouter(prefix="/api/v1/statistics/individual", tags=["Statistics Individual"])
 
 @router.post("/", response_model=StatisticIndividualResponse, status_code=status.HTTP_201_CREATED)
-async def create_statistic_individual(stat: StatisticIndividualCreate):
-    stat_doc = StatisticIndividual(**stat.dict())
-    await stat_doc.insert()
-    return StatisticIndividualResponse(**stat_doc.dict())
+async def create_statistic(data: StatisticIndividualCreate):
+    return await statistic_individual_service.create_statistic(data)
 
 @router.get("/", response_model=List[StatisticIndividualResponse])
-async def list_statistics_individual():
-    stats = await StatisticIndividual.find_all().to_list()
-    return [StatisticIndividualResponse(**s.dict()) for s in stats]
+async def list_statistics():
+    return await statistic_individual_service.list_statistics()
 
 @router.get("/{stat_id}", response_model=StatisticIndividualResponse)
-async def get_statistic_individual(stat_id: PydanticObjectId):
-    stat = await StatisticIndividual.get(stat_id)
-    if not stat:
-        raise HTTPException(status_code=404, detail="StatisticIndividual not found")
-    return StatisticIndividualResponse(**stat.dict())
+async def get_statistic(stat_id: PydanticObjectId):
+    return await statistic_individual_service.get_statistic(stat_id)
 
 @router.put("/{stat_id}", response_model=StatisticIndividualResponse)
-async def update_statistic_individual(stat_id: PydanticObjectId, stat: StatisticIndividualUpdate):
-    db_stat = await StatisticIndividual.get(stat_id)
-    if not db_stat:
-        raise HTTPException(status_code=404, detail="StatisticIndividual not found")
-    await db_stat.set({k: v for k, v in stat.dict(exclude_unset=True).items()})
-    return StatisticIndividualResponse(**db_stat.dict())
+async def update_statistic(stat_id: PydanticObjectId, data: StatisticIndividualUpdate):
+    return await statistic_individual_service.update_statistic(stat_id, data)
 
 @router.delete("/{stat_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_statistic_individual(stat_id: PydanticObjectId):
-    stat = await StatisticIndividual.get(stat_id)
-    if not stat:
-        raise HTTPException(status_code=404, detail="StatisticIndividual not found")
-    await stat.delete()
+async def delete_statistic(stat_id: PydanticObjectId):
+    await statistic_individual_service.delete_statistic(stat_id)
     return None
