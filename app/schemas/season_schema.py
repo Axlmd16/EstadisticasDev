@@ -6,9 +6,10 @@ from .catalog_item_schema import PyObjectId
 # Schemas de temporada
 
 class SeasonBase(BaseModel):
-    year: int
-    start_date: Optional[str] = None
-    end_date: Optional[str] = None
+    name: str
+    description: str
+    startDate: str  # Considera usar datetime si tu app ya lo soporta
+    endDate: str    # Considera usar datetime si tu app ya lo soporta
 
 class SeasonCreate(SeasonBase):
     pass

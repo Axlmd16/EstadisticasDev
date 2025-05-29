@@ -5,9 +5,10 @@ from pydantic import Field
 from typing import Optional
 
 class Season(Document):
-    year: int
-    start_date: Optional[str] = None
-    end_date: Optional[str] = None
+    name: str
+    description: str
+    startDate: str  # Considera usar datetime si tu app ya lo soporta
+    endDate: str    # Considera usar datetime si tu app ya lo soporta
 
     class Settings:
         name = "seasons"
