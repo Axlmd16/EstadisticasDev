@@ -6,9 +6,9 @@ from app.utils import PyObjectId
 from datetime import datetime
 
 class BaseStatistic(Document):
-    description: Optional[str]
-    date_generation: Optional[datetime]
-    value: Optional[float]
+    description: Optional[str] = None
+    date_generation: Optional[datetime] = None
+    value: Optional[float] = None
 
     class Settings:
         name = "statistics"

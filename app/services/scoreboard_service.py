@@ -126,7 +126,12 @@ class ScoreboardService:
             for idx, pos in enumerate(posiciones_ordenadas, start=1):
                 pos.position = idx
                 await pos.save()
-            
+
+            # Actualizar StatisticTeam de cada equipo
+            from app.services.statistics_team_service import statistic_team_service
+            for pos in posiciones_ordenadas:
+                await statistic_team_service.update_from_position_table(pos)
+
         except Exception as e:
             logger.error(f"Error updating position tables: {str(e)}")
             # No propagar el error

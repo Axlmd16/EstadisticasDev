@@ -6,7 +6,7 @@ from app.models.base_statistic import BaseStatistic
 
 class StatisticTeam(BaseStatistic):
     games_played: Optional[int] = None
-    games_drawn: Optional[int] = None
+    matches_drawn: Optional[int] = None
     matches_lost: Optional[int] = None
     matches_won: Optional[int] = None
     points: Optional[int] = None
