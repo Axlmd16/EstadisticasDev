@@ -275,8 +275,7 @@ class ScoreboardService:
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail="Scoreboard not found"
             )
-    
-    # ✅ MÉTODO DEDICADO para finalizar
+
     async def finalize_scoreboard(self, scoreboard_id: PydanticObjectId) -> ScoreboardResponse:
         """Método específico para finalizar un scoreboard"""
         return await self.update_scoreboard(
