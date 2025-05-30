@@ -21,6 +21,14 @@ class Scoreboard(Document):
         self.last_update = datetime.utcnow().isoformat()
         return await super().update(*args, **kwargs)
 
+    async def save(self, *args, **kwargs):
+        self.last_update = datetime.utcnow().isoformat()
+        return await super().save(*args, **kwargs)
+
+    async def update(self, *args, **kwargs):
+        self.last_update = datetime.utcnow().isoformat()
+        return await super().update(*args, **kwargs)
+
     class Settings:
         name = "scoreboards"
         use_revision = True

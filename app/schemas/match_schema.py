@@ -27,7 +27,7 @@ class MatchResponse(MatchBase):
         if isinstance(v, ObjectId):
             return str(v)
         return str(v) if v else None
-
+      
     @field_validator("season_id", "local_team_id", "visitor_team_id", mode="before")
     @classmethod
     def validate_objectid(cls, v):

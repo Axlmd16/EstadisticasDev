@@ -131,7 +131,6 @@ class ScoreboardService:
                     result_data['winner'] = 'draw'
                     result_data['loser'] = 'draw'
             await result_service.create_result(ResultCreate(**result_data))
-        
         return ScoreboardResponse(
             id=str(updated.id),
             last_update=updated.last_update,
