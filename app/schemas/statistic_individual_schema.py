@@ -6,22 +6,22 @@ class StatisticIndividualBase(BaseModel):
     description: Optional[str] = None
     date_generation: Optional[str] = None
     value: Optional[float] = None
-    fouls: Optional[int] = None
-    games_played: Optional[int] = None
-    points_scored: Optional[int] = None
+    goal: Optional[int] = None
+    own_goal: Optional[int] = None
+    foul: Optional[int] = None
+    red_card: Optional[int] = None
+    yellow_card: Optional[int] = None
     athlete_id: Optional[str] = None
 
 class StatisticIndividualCreate(StatisticIndividualBase):
     pass
 
 class StatisticIndividualUpdate(StatisticIndividualBase):
-    description: Optional[str] = None
-    date_generation: Optional[str] = None
-    value: Optional[float] = None
-    fouls: Optional[int] = None
-    games_played: Optional[int] = None
-    points_scored: Optional[int] = None
-    athlete_id: Optional[str] = None
+    goal: Optional[int] = None
+    own_goal: Optional[int] = None
+    foul: Optional[int] = None
+    red_card: Optional[int] = None
+    yellow_card: Optional[int] = None
 
 class StatisticIndividualResponse(StatisticIndividualBase):
     id: str = Field(alias="_id")
@@ -40,7 +40,6 @@ class StatisticIndividualResponse(StatisticIndividualBase):
     def check_fields(cls, values):
         for k, v in values.items():
             try:
-                # Intentar validar tipos manualmente si querés
                 pass
             except Exception as e:
                 print(f"Error en campo '{k}': valor '{v}', error: {e}")

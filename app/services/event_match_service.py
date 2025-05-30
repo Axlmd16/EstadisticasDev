@@ -2,6 +2,9 @@ import logging
 from beanie import PydanticObjectId
 from fastapi import HTTPException, status
 from bson import ObjectId
+from datetime import datetime
+from app.repositories.statistic_individual_repository import StatisticIndividualRepository
+from app.models.catalog_item import CatalogItem
 
 from app.repositories.event_match_repository import EventMatchRepository
 from app.schemas.event_match_schema import (
@@ -15,18 +18,49 @@ logger = logging.getLogger(__name__)
 class EventMatchService:
     def __init__(self):
         self.repo = EventMatchRepository()
+        self.stat_repo = StatisticIndividualRepository()
 
     async def create_event_match(self, event: EventMatchCreate) -> EventMatchResponse:
         try:
             event_data = event.model_dump(exclude_unset=True)
 
-            if "type_event" in event_data and event_data["type_event"]:
-                event_data["type_event"] = ObjectId(event_data["type_event"])
+            athlete_oid = ObjectId(event_data["athlete_id"]) if "athlete_id" in event_data and event_data["athlete_id"] else None
+            type_event_oid = ObjectId(event_data["type_event"]) if "type_event" in event_data and event_data["type_event"] else None
 
-            if "athlete_id" in event_data and event_data["athlete_id"]:
-                event_data["athlete_id"] = ObjectId(event_data["athlete_id"])
+            event_data["athlete_id"] = athlete_oid
+            event_data["type_event"] = type_event_oid
 
             doc = await self.repo.create(event_data)
+
+            if athlete_oid and type_event_oid:
+                catalog_item = await CatalogItem.get(type_event_oid)
+                if catalog_item and catalog_item.description in ["goal", "own goal", "foul", "red card", "yellow card"]:
+                    field_to_update = catalog_item.description.replace(" ", "_")
+
+                    # Buscar con el repo, no con collection
+                    existing_stat = await self.stat_repo.model.find_one({"athlete_id": athlete_oid})
+
+                    if not existing_stat:
+                        new_stat_data = {
+                            "athlete_id": athlete_oid,
+                            "description": catalog_item.description,
+                            "date_generation": datetime.utcnow().isoformat(),
+                            "value": 1,
+                            field_to_update: 1
+                        }
+                        await self.stat_repo.create(new_stat_data)
+                    else:
+                        current_value = getattr(existing_stat, field_to_update, 0)
+                        if current_value is None:
+                            current_value = 0
+                        updated_value = current_value + 1
+
+                        update_data = {
+                            field_to_update: updated_value,
+                            "date_generation": datetime.utcnow().isoformat()
+                        }
+                        await self.stat_repo.update(existing_stat.id, update_data)
+
             return EventMatchResponse(
                 id=str(doc.id),
                 description=doc.description,

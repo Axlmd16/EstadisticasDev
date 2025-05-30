@@ -29,9 +29,11 @@ class StatisticIndividualService:
                 description=doc.description,
                 date_generation=doc.date_generation,
                 value=doc.value,
-                fouls=doc.fouls,
-                games_played=doc.games_played,
-                points_scored=doc.points_scored,
+                goal=doc.goal,
+                own_goal=doc.own_goal,
+                foul=doc.foul,
+                red_card=doc.red_card,
+                yellow_card=doc.yellow_card,
                 athlete_id=str(doc.athlete_id) if doc.athlete_id else None,
             )
         except Exception as e:
@@ -47,9 +49,11 @@ class StatisticIndividualService:
                     description=r.description,
                     date_generation=r.date_generation,
                     value=r.value,
-                    fouls=r.fouls,
-                    games_played=r.games_played,
-                    points_scored=r.points_scored,
+                    goal=r.goal,
+                    own_goal=r.own_goal,
+                    foul=r.foul,
+                    red_card=r.red_card,
+                    yellow_card=r.yellow_card,
                     athlete_id=str(r.athlete_id) if r.athlete_id else None,
                 ) for r in records
             ]
@@ -67,9 +71,11 @@ class StatisticIndividualService:
             description=stat.description,
             date_generation=stat.date_generation,
             value=stat.value,
-            fouls=stat.fouls,
-            games_played=stat.games_played,
-            points_scored=stat.points_scored,
+            goal=stat.goal,
+            own_goal=stat.own_goal,
+            foul=stat.foul,
+            red_card=stat.red_card,
+            yellow_card=stat.yellow_card,
             athlete_id=str(stat.athlete_id) if stat.athlete_id else None,
         )
 
@@ -89,9 +95,11 @@ class StatisticIndividualService:
             description=updated.description,
             date_generation=updated.date_generation,
             value=updated.value,
-            fouls=updated.fouls,
-            games_played=updated.games_played,
-            points_scored=updated.points_scored,
+            goal=updated.goal,
+            own_goal=updated.own_goal,
+            foul=updated.foul,
+            red_card=updated.red_card,
+            yellow_card=updated.yellow_card,
             athlete_id=str(updated.athlete_id) if updated.athlete_id else None,
         )
 
@@ -101,4 +109,3 @@ class StatisticIndividualService:
             raise HTTPException(status_code=404, detail="Statistic not found")
 
 statistic_individual_service = StatisticIndividualService()
-    
