@@ -144,7 +144,7 @@ class ScoreboardService:
         if position:
             # Actualizar puntos existentes
             position.points_total = (position.points_total or 0) + points
-            await position.replace()  # ✅ CORREGIDO: usar replace() en lugar de save()
+            await position.replace()  
         else:
             # Crear nueva posición
             new_position = PositionTable(
@@ -238,15 +238,12 @@ class ScoreboardService:
         
         update_data = scoreboard.model_dump(exclude_unset=True)
         update_data = self._convert_string_ids_to_objectid(update_data)
-        
-        # ✅ CORREGIDO: Detectar cambio de is_final ANTES de actualizar
         is_final_now = update_data.get('is_final', None)
         was_final = getattr(db_scoreboard, 'is_final', False)
         
         # Actualizar el scoreboard
         updated = await self.repo.update(scoreboard_id, update_data)
-        
-        # ✅ LÓGICA DE FINALIZACIÓN: Si se marca como final, ejecutar acciones
+
         if is_final_now is True and not was_final:
             logger.info(f"Scoreboard {scoreboard_id} marked as final, triggering post-game actions")
             
@@ -255,7 +252,6 @@ class ScoreboardService:
             
             # Actualizar tabla de posiciones
             await self._update_position_tables(updated)
-        
         return ScoreboardResponse(
             id=str(updated.id),
             last_update=updated.last_update,
@@ -274,8 +270,7 @@ class ScoreboardService:
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail="Scoreboard not found"
             )
-    
-    # ✅ MÉTODO DEDICADO para finalizar
+
     async def finalize_scoreboard(self, scoreboard_id: PydanticObjectId) -> ScoreboardResponse:
         """Método específico para finalizar un scoreboard"""
         return await self.update_scoreboard(
