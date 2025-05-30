@@ -4,9 +4,11 @@ from app.models.base_statistic import BaseStatistic  # Herencia
 from pydantic import Field
 
 class StatisticIndividual(BaseStatistic):
-    fouls: Optional[int] = None
-    games_played: Optional[int] = None
-    points_scored: Optional[int] = None
+    goal: Optional[int] = None
+    own_goal: Optional[int] = None
+    foul: Optional[int] = None
+    red_card: Optional[int] = None
+    yellow_card: Optional[int] = None
     athlete_id: Optional[ObjectId] = None
 
     class Settings:
