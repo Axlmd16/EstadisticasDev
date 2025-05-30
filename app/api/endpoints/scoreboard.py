@@ -26,3 +26,11 @@ async def update_scoreboard(scoreboard_id: PydanticObjectId, scoreboard: Scorebo
 async def delete_scoreboard(scoreboard_id: PydanticObjectId):
     await scoreboard_service.delete_scoreboard(scoreboard_id)
     return None
+
+# Actualizar is_final de un scoreboard
+@router.put("/{scoreboard_id}/finalize", response_model=ScoreboardResponse)
+async def finalize_scoreboard(scoreboard_id: PydanticObjectId):
+    scoreboard = await scoreboard_service.finalize_scoreboard(scoreboard_id)
+    if not scoreboard:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Scoreboard not found")
+    return scoreboard
