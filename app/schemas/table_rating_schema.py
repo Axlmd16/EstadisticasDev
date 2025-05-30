@@ -1,43 +1,44 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List
 from bson import ObjectId
-from .catalog_item_schema import PyObjectId
-
-# Schemas de tabla de posiciones
 
 class TableRatingBase(BaseModel):
     last_update: Optional[str] = None
-    competition_id: Optional[PyObjectId] = None
-    positions: Optional[List[PyObjectId]] = []
-
+    competition_id: Optional[str] = None 
+    positions: List[str] = Field(default_factory=list) 
 class TableRatingCreate(TableRatingBase):
     pass
 
 class TableRatingUpdate(TableRatingBase):
-    pass
+    last_update: Optional[str] = None
+    competition_id: Optional[str] = None
+    positions: Optional[List[str]] = None
 
 class TableRatingResponse(TableRatingBase):
-    id: Optional[str] = Field(None, alias="_id")
-    positions: Optional[list[str]] = []
+    id: str = Field(alias="_id")  
 
     @field_validator("id", mode="before")
     @classmethod
     def validate_id(cls, v):
         if isinstance(v, ObjectId):
             return str(v)
-        if isinstance(v, PyObjectId):
+        return str(v) if v else None
+
+    @field_validator("competition_id", mode="before")
+    @classmethod
+    def validate_competition_id(cls, v):
+        if isinstance(v, ObjectId):
             return str(v)
-        return v
+        return str(v) if v else None
 
     @field_validator("positions", mode="before")
     @classmethod
     def validate_positions(cls, v):
         if isinstance(v, list):
-            return [str(i) if isinstance(i, (ObjectId, PyObjectId)) else i for i in v]
-        return v
+            return [str(item) if isinstance(item, ObjectId) else str(item) for item in v]
+        return []
 
     model_config = {
         "populate_by_name": True,
         "arbitrary_types_allowed": True,
-        "json_encoders": {ObjectId: str, PyObjectId: str},
     }
