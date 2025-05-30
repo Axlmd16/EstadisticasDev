@@ -4,8 +4,9 @@ from typing import Optional, List
 from bson import ObjectId
 
 class MatchBase(BaseModel):
-    season_id: Optional[str] = None 
-    team_ids: List[str] = Field(default_factory=list)
+    season_id: Optional[str] = None
+    local_team_id: str
+    visitor_team_id: str
     date: Optional[str] = None
 
 class MatchCreate(MatchBase):
@@ -13,11 +14,12 @@ class MatchCreate(MatchBase):
 
 class MatchUpdate(MatchBase):
     season_id: Optional[str] = None
-    team_ids: Optional[List[str]] = None
+    local_team_id: Optional[str] = None
+    visitor_team_id: Optional[str] = None
     date: Optional[str] = None
 
 class MatchResponse(MatchBase):
-    id: str = Field(alias="_id")  
+    id: str = Field(alias="_id")
 
     @field_validator("id", mode="before")
     @classmethod
@@ -25,20 +27,13 @@ class MatchResponse(MatchBase):
         if isinstance(v, ObjectId):
             return str(v)
         return str(v) if v else None
-
-    @field_validator("season_id", mode="before")
+      
+    @field_validator("season_id", "local_team_id", "visitor_team_id", mode="before")
     @classmethod
-    def validate_season_id(cls, v):
+    def validate_objectid(cls, v):
         if isinstance(v, ObjectId):
             return str(v)
         return str(v) if v else None
-
-    @field_validator("team_ids", mode="before")
-    @classmethod
-    def validate_team_ids(cls, v):
-        if isinstance(v, list):
-            return [str(item) if isinstance(item, ObjectId) else str(item) for item in v]
-        return []
 
     model_config = {
         "populate_by_name": True,

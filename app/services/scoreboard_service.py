@@ -38,6 +38,7 @@ class ScoreboardService:
                 score_local=doc.score_local,
                 score_visitor=doc.score_visitor,
                 time_restant=doc.time_restant,
+                is_final=doc.is_final,
                 match_id=str(doc.match_id) if doc.match_id else None
             )
         except Exception as e:
@@ -58,6 +59,7 @@ class ScoreboardService:
                     score_local=scoreboard.score_local,
                     score_visitor=scoreboard.score_visitor,
                     time_restant=scoreboard.time_restant,
+                    is_final=scoreboard.is_final,
                     match_id=str(scoreboard.match_id) if scoreboard.match_id else None
                 ) for scoreboard in scoreboards
             ]
@@ -83,6 +85,7 @@ class ScoreboardService:
             score_local=scoreboard.score_local,
             score_visitor=scoreboard.score_visitor,
             time_restant=scoreboard.time_restant,
+            is_final=scoreboard.is_final,
             match_id=str(scoreboard.match_id) if scoreboard.match_id else None
         )
 
@@ -97,8 +100,37 @@ class ScoreboardService:
         update_data = scoreboard.model_dump(exclude_unset=True)
         update_data = self._convert_string_ids_to_objectid(update_data)
         
+        # Detectar si is_final pasa a True y crear Result
+        is_final_now = update_data.get('is_final', None)
+        was_final = getattr(db_scoreboard, 'is_final', False)
         updated = await self.repo.update(scoreboard_id, update_data)
         
+        # Si is_final se marca como True y antes no lo estaba, crear Result
+        if is_final_now is True and not was_final:
+            from app.services.result_service import result_service
+            from app.schemas.result_schema import ResultCreate
+            from datetime import datetime
+            result_data = {
+                'date_registration': datetime.utcnow().isoformat(),
+                'score_local': updated.score_local,
+                'score_visitor': updated.score_visitor,
+                'scoreboard_id': str(updated.id),
+                'winner': None,
+                'loser': None,
+                'details': None
+            }
+            # Determinar ganador y perdedor si aplica
+            if updated.score_local is not None and updated.score_visitor is not None:
+                if updated.score_local > updated.score_visitor:
+                    result_data['winner'] = 'local'
+                    result_data['loser'] = 'visitor'
+                elif updated.score_local < updated.score_visitor:
+                    result_data['winner'] = 'visitor'
+                    result_data['loser'] = 'local'
+                else:
+                    result_data['winner'] = 'draw'
+                    result_data['loser'] = 'draw'
+            await result_service.create_result(ResultCreate(**result_data))
         return ScoreboardResponse(
             id=str(updated.id),
             last_update=updated.last_update,
@@ -106,6 +138,7 @@ class ScoreboardService:
             score_local=updated.score_local,
             score_visitor=updated.score_visitor,
             time_restant=updated.time_restant,
+            is_final=updated.is_final,
             match_id=str(updated.match_id) if updated.match_id else None
         )
 

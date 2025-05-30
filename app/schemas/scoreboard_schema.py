@@ -8,6 +8,7 @@ class ScoreboardBase(BaseModel):
     score_local: Optional[int] = None
     score_visitor: Optional[int] = None
     time_restant: Optional[int] = None
+    is_final: Optional[bool] = None
     match_id: Optional[str] = None  
 
 class ScoreboardCreate(ScoreboardBase):
