@@ -5,7 +5,7 @@ from bson import ObjectId
 from datetime import datetime
 
 class Scoreboard(Document):
-    last_update: Optional[str] = Field(default_factory=lambda: datetime.utcnow().isoformat())
+    last_update: Optional[datetime] = Field(default_factory=datetime.utcnow)
     status_game: Optional[ObjectId] = None
     score_local: Optional[int] = None
     score_visitor: Optional[int] = None
@@ -14,19 +14,11 @@ class Scoreboard(Document):
     is_final: bool = False  
 
     async def save(self, *args, **kwargs):
-        self.last_update = datetime.utcnow().isoformat()
+        self.last_update = datetime.utcnow()
         return await super().save(*args, **kwargs)
 
     async def update(self, *args, **kwargs):
-        self.last_update = datetime.utcnow().isoformat()
-        return await super().update(*args, **kwargs)
-
-    async def save(self, *args, **kwargs):
-        self.last_update = datetime.utcnow().isoformat()
-        return await super().save(*args, **kwargs)
-
-    async def update(self, *args, **kwargs):
-        self.last_update = datetime.utcnow().isoformat()
+        self.last_update = datetime.utcnow()
         return await super().update(*args, **kwargs)
 
     class Settings:

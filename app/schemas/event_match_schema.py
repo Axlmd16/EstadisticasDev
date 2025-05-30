@@ -1,10 +1,11 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from bson import ObjectId
+from datetime import datetime
 
 class EventMatchBase(BaseModel):
     description: Optional[str] = None
-    date_registration: Optional[str] = None
+    date_registration: Optional[datetime] = None
     minute: Optional[float] = None
     type_event: Optional[str] = None
     athlete_id: Optional[str] = None  
@@ -14,7 +15,7 @@ class EventMatchCreate(EventMatchBase):
 
 class EventMatchUpdate(EventMatchBase):
     description: Optional[str] = None
-    date_registration: Optional[str] = None
+    date_registration: Optional[datetime] = None
     minute: Optional[float] = None
     type_event: Optional[str] = None
     athlete_id: Optional[str] = None

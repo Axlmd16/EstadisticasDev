@@ -1,10 +1,11 @@
 from pydantic import BaseModel, Field, field_validator, ValidationError, root_validator
 from typing import Optional
 from bson import ObjectId
+from datetime import datetime
 
 class StatisticIndividualBase(BaseModel):
     description: Optional[str] = None
-    date_generation: Optional[str] = None
+    date_generation: Optional[datetime] = None
     value: Optional[float] = None
     goal: Optional[int] = None
     own_goal: Optional[int] = None

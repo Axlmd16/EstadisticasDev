@@ -1,9 +1,10 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from bson import ObjectId
+from datetime import datetime
 
 class ResultBase(BaseModel):
-    date_registration: Optional[str] = None
+    date_registration: Optional[datetime] = None
     details: Optional[str] = None
     loser: Optional[str] = None
     score_local: Optional[int] = None

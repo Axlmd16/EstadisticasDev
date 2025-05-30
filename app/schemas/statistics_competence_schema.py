@@ -1,10 +1,11 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from bson import ObjectId
+from datetime import datetime
 
 class StatisticCompetenceBase(BaseModel):
     description: Optional[str] = None
-    date_generation: Optional[str] = None
+    date_generation: Optional[datetime] = None
     value: Optional[float] = None
     average_score: Optional[float] = None
     matches_completed: Optional[int] = None

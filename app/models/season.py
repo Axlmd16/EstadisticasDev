@@ -3,12 +3,13 @@
 from beanie import Document
 from pydantic import Field
 from typing import Optional
+from datetime import datetime
 
 class Season(Document):
     name: str
     description: str
-    startDate: str  # Considera usar datetime si tu app ya lo soporta
-    endDate: str    # Considera usar datetime si tu app ya lo soporta
+    startDate: datetime
+    endDate: datetime
 
     class Settings:
         name = "seasons"

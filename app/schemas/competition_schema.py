@@ -1,20 +1,21 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
+from datetime import datetime
 
 # Schemas de competencia
 
 class CompetitionBase(BaseModel):
     name: str
-    start_date: Optional[str] = None
-    end_date: Optional[str] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
 
 class CompetitionCreate(CompetitionBase):
     pass
 
 class CompetitionUpdate(CompetitionBase):
     name: Optional[str] = None
-    start_date: Optional[str] = None
-    end_date: Optional[str] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
 
 class CompetitionResponse(CompetitionBase):
     id: str = Field(alias="_id")

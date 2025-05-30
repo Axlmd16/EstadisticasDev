@@ -3,9 +3,10 @@ from beanie import Document
 from pydantic import Field
 from typing import Optional, List
 from bson import ObjectId
+from datetime import datetime
 
 class TableRating(Document):
-    last_update: Optional[str] = None
+    last_update: Optional[datetime] = None
     competition_id: Optional[ObjectId] = None
     positions: List[ObjectId] = Field(default_factory=list)
 

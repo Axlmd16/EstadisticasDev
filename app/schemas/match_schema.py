@@ -2,12 +2,13 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional, List
 from bson import ObjectId
+from datetime import datetime
 
 class MatchBase(BaseModel):
     season_id: Optional[str] = None
     local_team_id: str
     visitor_team_id: str
-    date: Optional[str] = None
+    date: Optional[datetime] = None
 
 class MatchCreate(MatchBase):
     pass
@@ -16,7 +17,7 @@ class MatchUpdate(MatchBase):
     season_id: Optional[str] = None
     local_team_id: Optional[str] = None
     visitor_team_id: Optional[str] = None
-    date: Optional[str] = None
+    date: Optional[datetime] = None
 
 class MatchResponse(MatchBase):
     id: str = Field(alias="_id")

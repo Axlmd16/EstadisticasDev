@@ -1,10 +1,11 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from bson import ObjectId
+from datetime import datetime
 
 class StatisticSeasonBase(BaseModel):
     description: Optional[str] = None
-    date_generation: Optional[str] = None
+    date_generation: Optional[datetime] = None
     value: Optional[float] = None
     most_fouls: Optional[str] = None
     most_red_cards: Optional[str] = None

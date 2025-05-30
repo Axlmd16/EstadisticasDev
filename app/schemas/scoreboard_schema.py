@@ -2,6 +2,7 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from bson import ObjectId
+from datetime import datetime
 
 class ScoreboardBase(BaseModel):
     status_game: Optional[str] = None  
@@ -10,6 +11,7 @@ class ScoreboardBase(BaseModel):
     time_restant: Optional[int] = None
     is_final: Optional[bool] = None
     match_id: Optional[str] = None  
+    last_update: Optional[datetime] = None
 
 class ScoreboardCreate(ScoreboardBase):
     pass

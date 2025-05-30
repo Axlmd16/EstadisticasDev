@@ -2,14 +2,15 @@ from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from bson import ObjectId
 from .catalog_item_schema import PyObjectId
+from datetime import datetime
 
 # Schemas de temporada
 
 class SeasonBase(BaseModel):
     name: str
     description: str
-    startDate: str  # Considera usar datetime si tu app ya lo soporta
-    endDate: str    # Considera usar datetime si tu app ya lo soporta
+    startDate: datetime
+    endDate: datetime
 
 class SeasonCreate(SeasonBase):
     pass

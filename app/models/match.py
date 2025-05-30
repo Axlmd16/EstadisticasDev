@@ -3,12 +3,13 @@ from beanie import Document
 from pydantic import Field
 from typing import Optional
 from bson import ObjectId
+from datetime import datetime
 
 class Match(Document):
     season_id: Optional[ObjectId] = None
     local_team_id: ObjectId 
     visitor_team_id: ObjectId  
-    date: Optional[str] = None
+    date: Optional[datetime] = None
 
     class Settings:
         name = "matches"
