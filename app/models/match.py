@@ -1,12 +1,13 @@
 # app/models/match.py - VERSIÓN CORREGIDA
 from beanie import Document
 from pydantic import Field
-from typing import Optional, List
+from typing import Optional
 from bson import ObjectId
 
 class Match(Document):
     season_id: Optional[ObjectId] = None
-    team_ids: List[ObjectId] = Field(default_factory=list)
+    local_team_id: ObjectId
+    visitor_team_id: ObjectId
     date: Optional[str] = None
 
     class Settings:
