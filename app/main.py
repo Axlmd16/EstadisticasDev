@@ -8,7 +8,7 @@ import pytz
 import uvicorn
 from app.api.endpoints.teams import router as teams_router
 from app.api.endpoints.players import router as athletes_router
-from app.api.endpoints.statistics import router as competitions_router
+from app.api.endpoints.competition import router as competitions_router
 from app.api.endpoints.matches import router as matches_router
 from app.api.endpoints.arbitre import router as arbitre_router
 from app.api.endpoints.season import router as season_router
@@ -19,7 +19,7 @@ from app.api.endpoints.table_rating import router as table_rating_router
 from app.api.endpoints.position_table import router as position_table_router
 from app.api.endpoints.catalog_item import router as catalog_item_router
 from app.api.endpoints.statistics_ws import router as statistics_ws_router
-from app.api.endpoints.statistic_competence import router as statistic_competence_router
+from app.api.endpoints.statistics_competence import router as statistic_competence_router
 from app.api.endpoints.statistic_individual import router as statistic_individual_router
 from app.api.endpoints.statistic_team import router as statistic_team_router
 from app.api.endpoints.statistic_season import router as statistic_season_router

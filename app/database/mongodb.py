@@ -14,7 +14,7 @@ from app.models.scoreboard import Scoreboard
 from app.models.season import Season
 from app.models.table_rating import TableRating
 from app.models.team import Team
-from app.models.statistic_competence import StatisticCompetence
+from app.models.statistics_competence import StatisticCompetence
 from app.models.statistic_individual import StatisticIndividual
 from app.models.statistic_season import StatisticSeason
 from app.models.statistic_team import StatisticTeam
@@ -35,7 +35,7 @@ class MongoDB:
                     EventMatch, Match, PositionTable, Result,
                     Scoreboard, Season, TableRating, Team,
                     StatisticCompetence, StatisticIndividual,
-                    StatisticSeason, StatisticTeam
+                    StatisticTeam, StatisticSeason,
                 ]
             )
             logger.info("Conexión a MongoDB establecida exitosamente")

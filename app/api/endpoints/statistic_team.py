@@ -1,41 +1,35 @@
-from fastapi import APIRouter, HTTPException, status
-from typing import List
-from app.models.statistic_team import StatisticTeam
-from app.schemas.statistic_schemas import StatisticTeamCreate, StatisticTeamUpdate, StatisticTeamResponse
+from fastapi import APIRouter, Depends, Path
 from beanie import PydanticObjectId
 
-router = APIRouter(prefix="/api/v1/statistics/team", tags=["StatisticsTeam"])
+from app.schemas.statistics_team_schema import (
+    StatisticTeamCreate,
+    StatisticTeamUpdate,
+    StatisticTeamResponse,
+)
+from app.services.statistics_team_service import statistic_team_service
 
-@router.post("/", response_model=StatisticTeamResponse, status_code=status.HTTP_201_CREATED)
+router = APIRouter(prefix="/statistics/team", tags=["Statistic Team"])
+
+@router.post("/", response_model=StatisticTeamResponse)
 async def create_statistic_team(stat: StatisticTeamCreate):
-    stat_doc = StatisticTeam(**stat.dict())
-    await stat_doc.insert()
-    return StatisticTeamResponse(**stat_doc.dict())
+    return await statistic_team_service.create_statistic_team(stat)
 
-@router.get("/", response_model=List[StatisticTeamResponse])
-async def list_statistics_team():
-    stats = await StatisticTeam.find_all().to_list()
-    return [StatisticTeamResponse(**s.dict()) for s in stats]
+@router.get("/", response_model=list[StatisticTeamResponse])
+async def list_statistic_teams():
+    return await statistic_team_service.list_statistic_teams()
 
 @router.get("/{stat_id}", response_model=StatisticTeamResponse)
-async def get_statistic_team(stat_id: PydanticObjectId):
-    stat = await StatisticTeam.get(stat_id)
-    if not stat:
-        raise HTTPException(status_code=404, detail="StatisticTeam not found")
-    return StatisticTeamResponse(**stat.dict())
+async def get_statistic_team(stat_id: PydanticObjectId = Path(...)):
+    return await statistic_team_service.get_statistic_team(stat_id)
 
 @router.put("/{stat_id}", response_model=StatisticTeamResponse)
-async def update_statistic_team(stat_id: PydanticObjectId, stat: StatisticTeamUpdate):
-    db_stat = await StatisticTeam.get(stat_id)
-    if not db_stat:
-        raise HTTPException(status_code=404, detail="StatisticTeam not found")
-    await db_stat.set({k: v for k, v in stat.dict(exclude_unset=True).items()})
-    return StatisticTeamResponse(**db_stat.dict())
+async def update_statistic_team(
+    stat_id: PydanticObjectId = Path(...),
+    stat: StatisticTeamUpdate = Depends()
+):
+    return await statistic_team_service.update_statistic_team(stat_id, stat)
 
-@router.delete("/{stat_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_statistic_team(stat_id: PydanticObjectId):
-    stat = await StatisticTeam.get(stat_id)
-    if not stat:
-        raise HTTPException(status_code=404, detail="StatisticTeam not found")
-    await stat.delete()
-    return None
+@router.delete("/{stat_id}")
+async def delete_statistic_team(stat_id: PydanticObjectId = Path(...)):
+    await statistic_team_service.delete_statistic_team(stat_id)
+    return {"message": "StatisticTeam deleted successfully"}

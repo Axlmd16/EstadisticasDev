@@ -31,3 +31,6 @@ class BaseRepository:
 
     async def list(self, skip: int = 0, limit: int = 100) -> List[T]:
         return await self.model.find_all().skip(skip).limit(limit).to_list()
+
+    async def find_one(self, filter: dict) -> Optional[T]:
+        return await self.model.find_one(filter)

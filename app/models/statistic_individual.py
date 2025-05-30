@@ -1,13 +1,14 @@
-from beanie import Document
-from pydantic import Field
-from typing import Optional
 from bson import ObjectId
+from typing import Optional
+from app.models.base_statistic import BaseStatistic  # Herencia
+from pydantic import Field
 
-# Modelo de estadística individual
-class StatisticIndividual(Document):
-    fouls: Optional[int] = None
-    games_played: Optional[int] = None
-    points_scored: Optional[int] = None
+class StatisticIndividual(BaseStatistic):
+    goal: Optional[int] = None
+    own_goal: Optional[int] = None
+    foul: Optional[int] = None
+    red_card: Optional[int] = None
+    yellow_card: Optional[int] = None
     athlete_id: Optional[ObjectId] = None
 
     class Settings:

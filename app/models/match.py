@@ -1,19 +1,15 @@
-# Modelo de partido
-
+# app/models/match.py - VERSIÓN ACTUALIZADA
 from beanie import Document
 from pydantic import Field
-from typing import Optional, List
+from typing import Optional
 from bson import ObjectId
+from datetime import datetime
 
 class Match(Document):
-    competition_id: Optional[ObjectId] = None
     season_id: Optional[ObjectId] = None
-    scoreboard_id: Optional[ObjectId] = None
-    result_id: Optional[ObjectId] = None
-    event_match_ids: List[ObjectId] = Field(default_factory=list)
-    arbitre_id: Optional[ObjectId] = None
-    team_ids: List[ObjectId] = Field(default_factory=list)
-    date: Optional[str] = None
+    local_team_id: ObjectId 
+    visitor_team_id: ObjectId  
+    date: Optional[datetime] = None
 
     class Settings:
         name = "matches"

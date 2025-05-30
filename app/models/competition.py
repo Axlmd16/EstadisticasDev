@@ -3,11 +3,12 @@
 from beanie import Document
 from pydantic import Field
 from typing import Optional
+from datetime import datetime
 
 class Competition(Document):
     name: str
-    start_date: Optional[str] = None
-    end_date: Optional[str] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
 
     class Settings:
         name = "competitions"

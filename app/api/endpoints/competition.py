@@ -3,6 +3,8 @@ from typing import List
 from app.models.competition import Competition
 from app.schemas.competition_schema import CompetitionCreate, CompetitionUpdate, CompetitionResponse
 from beanie import PydanticObjectId
+from app.services.table_rating_service import table_rating_service
+from app.schemas.table_rating_schema import TableRatingCreate
 
 router = APIRouter(prefix="/api/v1/competitions", tags=["Competitions"])
 
@@ -10,6 +12,13 @@ router = APIRouter(prefix="/api/v1/competitions", tags=["Competitions"])
 async def create_competition(competition: CompetitionCreate):
     competition_doc = Competition(**competition.dict())
     await competition_doc.insert()
+    await table_rating_service.create_table_rating(
+        TableRatingCreate(
+            competition_id=str(competition_doc.id),  
+            last_update=None,
+            positions=[]
+        )
+    )
     return CompetitionResponse(**competition_doc.dict())
 
 @router.get("/", response_model=List[CompetitionResponse])

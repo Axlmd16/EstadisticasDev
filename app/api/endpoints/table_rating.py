@@ -3,12 +3,16 @@ from typing import List
 from app.models.table_rating import TableRating
 from app.schemas.table_rating_schema import TableRatingCreate, TableRatingUpdate, TableRatingResponse
 from beanie import PydanticObjectId
+from bson import ObjectId
 
 router = APIRouter(prefix="/api/v1/table_ratings", tags=["TableRatings"])
 
 @router.post("/", response_model=TableRatingResponse, status_code=status.HTTP_201_CREATED)
 async def create_table_rating(table_rating: TableRatingCreate):
-    table_rating_doc = TableRating(**table_rating.dict())
+    data = table_rating.dict()
+    if data.get("competition_id"):
+        data["competition_id"] = ObjectId(data["competition_id"])
+    table_rating_doc = TableRating(**data)
     await table_rating_doc.insert()
     return TableRatingResponse(**table_rating_doc.dict())
 

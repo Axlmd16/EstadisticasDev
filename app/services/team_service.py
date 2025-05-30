@@ -4,6 +4,8 @@ from app.schemas.team_schema import TeamCreate, TeamUpdate, TeamResponse
 from beanie import PydanticObjectId
 from fastapi import HTTPException, status
 import logging
+from app.services.statistics_team_service import statistic_team_service
+from app.schemas.statistics_team_schema import StatisticTeamCreate
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +17,10 @@ class TeamService:
         try:
             team_data = team.model_dump(exclude_unset=True)
             doc = await self.repo.create(team_data)
-            
+            # Crear estadística de equipo automáticamente
+            await statistic_team_service.create_statistic_team(
+                StatisticTeamCreate(id_team=str(doc.id))
+            )
             return TeamResponse(
                 id=str(doc.id),
                 name=doc.name,
